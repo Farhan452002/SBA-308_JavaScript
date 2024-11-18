@@ -76,18 +76,18 @@ const CourseInfo = {
     }
   ];
 
-// function getLearnerData(course,assignment,learner){
-//     const resultsArray=[];
-//     if(course_id == AssignmentGroup.course_id){
-//         console.log("Course ID matches for the Assignment Group");
-//         try{
-//             let id1, id2;
-//             for(let i=0;i<learner.length();i++){
-//                 id1 = learner[i].id
-//                 if(i+1<learner.length()){ id2 = learner[i+1].id}
+function getLearnerData(course,assignment,learner){
+    const resultsArray=[];
+    if(course_id == AssignmentGroup.course_id){
+        console.log("Course ID matches for the Assignment Group");
+        try{
+            let id1, id2;
+            for(let i=0;i<learner.length();i++){
+                id1 = learner[i].id
+                if(i+1<learner.length()){ id2 = learner[i+1].id}
                 
-//             }
-//         }
-//         catch(error){}
-//     }
-// }
+            }
+        }
+        catch(error){}
+    }
+}
