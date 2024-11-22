@@ -130,7 +130,9 @@ function getLearnerData(course, ag, submissions) {
     }, {});
   // Compute average scores
   return Object.values(learnerResults).map(learner => {
+    // Decimal format
     learner.avg = parseFloat(((learner.totalPoints / learner.totalPossible) * 100).toFixed(2));
+    // Delete variables no longer necessary
     delete learner.totalPoints;
     delete learner.totalPossible;
     return learner;
