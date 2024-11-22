@@ -90,6 +90,12 @@ function getLearnerData(course, ag, submissions) {
     if (!validAssignments.length) {
       throw new Error("No assignments due for processing.");
     }
+
+    // Search by Assignment ID using Object.fromEntries
+    const assignmentMap = Object.fromEntries(
+      validAssignments.map(assignment => [assignment.id, assignment])
+    );
+
   }
 }
 
