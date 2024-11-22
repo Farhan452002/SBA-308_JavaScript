@@ -96,7 +96,39 @@ function getLearnerData(course, ag, submissions) {
       validAssignments.map(assignment => [assignment.id, assignment])
     );
 
-  }
+
+    
+    // Process learner data
+    const learnerResults = submissions.reduce((acc, submission) => {
+      const { learner_id, assignment_id, submission: sub } = submission;
+
+      if (!assignmentMap[assignment_id]) {
+        return acc; // Ignore submissions for assignments that are not due
+      }
+
+      const assignment = assignmentMap[assignment_id];
+      if (typeof assignment.points_possible !== "number" || assignment.points_possible <= 0) {
+        throw new Error(`Invalid points_possible for assignment ID ${assignment_id}`);
+      }
+
+      const dueDate = new Date(assignment.due_at);
+      const submittedDate = new Date(sub.submitted_at);
+      const isLate = submittedDate > dueDate;
+      const adjustedScore = isLate ? Math.max(0, sub.score - 0.1 * assignment.points_possible) : sub.score;
+      const percentage = adjustedScore / assignment.points_possible;
+
+      if (!acc[learner_id]) {
+        acc[learner_id] = { id: learner_id, avg: 0, totalPoints: 0, totalPossible: 0 };
+      }
+
+      acc[learner_id][assignment_id] = parseFloat((percentage * 100).toFixed(2));
+      acc[learner_id].totalPoints += adjustedScore;
+      acc[learner_id].totalPossible += assignment.points_possible;
+
+      return acc;
+    }, {});
+
+   
 }
 
 const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
