@@ -107,6 +107,7 @@ function getLearnerData(course, ag, submissions) {
       }
 
       const assignment = assignmentMap[assignment_id];
+      // Error Handling for Possible Points 
       if (typeof assignment.points_possible !== "number" || assignment.points_possible <= 0) {
         throw new Error(`Invalid points_possible for assignment ID ${assignment_id}`);
       }
@@ -116,18 +117,28 @@ function getLearnerData(course, ag, submissions) {
       const isLate = submittedDate > dueDate;
       const adjustedScore = isLate ? Math.max(0, sub.score - 0.1 * assignment.points_possible) : sub.score;
       const percentage = adjustedScore / assignment.points_possible;
-
+      // If the Accumilator does not have the current ID. Then use placeholder values 
       if (!acc[learner_id]) {
         acc[learner_id] = { id: learner_id, avg: 0, totalPoints: 0, totalPossible: 0 };
       }
-
+      // Input Values
       acc[learner_id][assignment_id] = parseFloat((percentage * 100).toFixed(2));
       acc[learner_id].totalPoints += adjustedScore;
       acc[learner_id].totalPossible += assignment.points_possible;
 
       return acc;
     }, {});
-
+  // Compute average scores
+  return Object.values(learnerResults).map(learner => {
+    learner.avg = parseFloat(((learner.totalPoints / learner.totalPossible) * 100).toFixed(2));
+    delete learner.totalPoints;
+    delete learner.totalPossible;
+    return learner;
+});
+} catch (error) {
+console.error("Error processing learner data:", error.message);
+return [];
+}
    
 }
 
