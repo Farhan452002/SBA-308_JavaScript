@@ -79,6 +79,17 @@ function getLearnerData(course, ag, submissions) {
     if (ag.course_id !== course.id) {
       throw new Error(`Invalid data: AssignmentGroup does not belong to Course ID ${course.id}`);
     }
+
+    // Filter assignments that are due
+    const currentDate = new Date();
+    const validAssignments = ag.assignments.filter(assignment => {
+      const dueDate = new Date(assignment.due_at);
+      return dueDate <= currentDate;
+    });
+
+    if (!validAssignments.length) {
+      throw new Error("No assignments due for processing.");
+    }
   }
 }
 
